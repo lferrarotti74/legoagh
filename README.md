@@ -88,6 +88,3 @@ SERVER="https://acme.zerossl.com/v2/DV90" \
     ...
     ./lego.sh
 ```
-
-
-[def]: https://www.dynu.com/
