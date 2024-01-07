@@ -402,7 +402,7 @@ run_lego_dynudns() {
             --accept-tos \
             --server "${SERVER:-}" \
             --eab --kid "${EAB_KID:-}" --hmac "${EAB_HMAC:-}" \
-            --dns duckdns \
+            --dns dynu \
             --domains "${wildcardDomainName}" \
             --domains "${domainName}" \
             --email "${email}" \
@@ -412,7 +412,7 @@ run_lego_dynudns() {
         DYNU_API_KEY="${DYNU_API_KEY}" \
             ./lego \
             --accept-tos \
-            --dns duckdns \
+            --dns dynu \
             --domains "${wildcardDomainName}" \
             --domains "${domainName}" \
             --email "${email}" \
