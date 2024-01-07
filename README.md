@@ -61,7 +61,7 @@ DOMAIN_NAME="example.duckdns.org" \
     ./lego.sh
 ```
 
-If you're using DynuDNS, you need to [copy the API from dynudns](www.dynu.com/).
+If you're using DynuDNS, you need to [copy the API from dynudns](https://www.dynu.com/).
 
 Then run the script:
 
@@ -88,3 +88,6 @@ SERVER="https://acme.zerossl.com/v2/DV90" \
     ...
     ./lego.sh
 ```
+
+
+[def]: https://www.dynu.com/
