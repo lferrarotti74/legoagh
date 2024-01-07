@@ -9,7 +9,8 @@ set -e -f -u
 # DOMAIN_NAME       Main domain name we're obtaining a wildcard certificate for.
 # DNS_PROVIDER      DNS provider lego uses to prove that you're in control of
 # 					the domain. The current version supports the following hosts:
-# 					"cloudflare", "digitalocean", "dreamhost", "duckdns" and "godaddy".
+# 					"cloudflare", "digitalocean", "dreamhost", "duckdns", "godaddy"
+#                   and "dynudns".
 # EMAIL				Your email address.
 #
 # CloudFlare
@@ -50,6 +51,13 @@ set -e -f -u
 #
 # GODADDY_API_KEY				API key.
 # GODADDY_API_SECRET			API secret.
+#
+#
+# Dynu DNS
+# ---
+# If you're using DynuDNS you must specify the API token
+#
+# DYNU_API_KEY                  Your API key
 
 # Function error_exit is an echo wrapper that writes to stderr and stops the
 # script execution with code 1.
@@ -80,7 +88,7 @@ check_env() {
         error_exit "EMAIL must be specified"
     fi
 
-    if [ "${DNS_PROVIDER}" != 'godaddy' ] && [ "${DNS_PROVIDER}" != 'cloudflare' ] && [ "${DNS_PROVIDER}" != 'digitalocean' ] && [ "${DNS_PROVIDER}" != "dreamhost" ] && [ "${DNS_PROVIDER}" != 'duckdns' ]; then
+    if [ "${DNS_PROVIDER}" != 'godaddy' ] && [ "${DNS_PROVIDER}" != 'cloudflare' ] && [ "${DNS_PROVIDER}" != 'digitalocean' ] && [ "${DNS_PROVIDER}" != "dreamhost" ] && [ "${DNS_PROVIDER}" != 'duckdns' ] && [ "${DNS_PROVIDER}" != 'dynudns' ]; then
         error_exit "DNS provider ${DNS_PROVIDER} is not supported"
     fi
 
@@ -115,6 +123,12 @@ check_env() {
     if [ "${DNS_PROVIDER}" = 'duckdns' ]; then
         if [ -z "${DUCKDNS_TOKEN+x}" ]; then
             error_exit "DUCKDNS_TOKEN must be specified"
+        fi
+    fi	
+
+    if [ "${DNS_PROVIDER}" = 'dynudns' ]; then
+        if [ -z "${DYNU_API_KEY+x}" ]; then
+            error_exit "DYNU_API_KEY must be specified"
         fi
     fi	
 
@@ -378,6 +392,36 @@ run_lego_duckdns() {
     fi
 }
 
+
+run_lego_dynudns() {
+    if [ "${SERVER:-}" != "" ] &&
+        [ "${EAB_KID:-}" != "" ] &&
+        [ "${EAB_HMAC:-}" != "" ]; then
+        DYNU_API_KEY="${DYNU_API_KEY}" \
+            ./lego \
+            --accept-tos \
+            --server "${SERVER:-}" \
+            --eab --kid "${EAB_KID:-}" --hmac "${EAB_HMAC:-}" \
+            --dns duckdns \
+            --domains "${wildcardDomainName}" \
+            --domains "${domainName}" \
+            --email "${email}" \
+            --cert.timeout 600 \
+            run
+    else
+        DYNU_API_KEY="${DYNU_API_KEY}" \
+            ./lego \
+            --accept-tos \
+            --dns duckdns \
+            --domains "${wildcardDomainName}" \
+            --domains "${domainName}" \
+            --email "${email}" \
+            --cert.timeout 600 \
+            run \
+            --preferred-chain="ISRG Root X1"
+    fi
+}
+
 run_lego() {
     domainName="${DOMAIN_NAME}"
     wildcardDomainName="*.${DOMAIN_NAME}"
@@ -403,6 +447,10 @@ run_lego() {
 
     duckdns)
     	run_lego_duckdns
+    	;;
+    
+    dynudns)
+    	run_lego_dynudns
     	;;
 
     *)

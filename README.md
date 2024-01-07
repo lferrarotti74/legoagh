@@ -49,7 +49,6 @@ DOMAIN_NAME="example.org" \
     ./lego.sh
 ```
 
-
 If you're using DuckDNS, you need to [copy the API from duckdns](https://www.duckdns.org/).
 
 Then run the script:
@@ -59,6 +58,18 @@ DOMAIN_NAME="example.duckdns.org" \
     EMAIL="you@email" \
     DNS_PROVIDER="duckdns" \
     DUCKDNS_TOKEN="yourduckdnstoken" \
+    ./lego.sh
+```
+
+If you're using DynuDNS, you need to [copy the API from dynudns](www.dynu.com/).
+
+Then run the script:
+
+```bash
+DOMAIN_NAME="example.dynuddns.com" \
+    EMAIL="you@email" \
+    DNS_PROVIDER="dynudns" \
+    DYNU_API_KEY="yourapitoken" \
     ./lego.sh
 ```
 
