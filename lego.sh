@@ -469,8 +469,8 @@ copy_certificate() {
     cp -f "./.lego/certificates/_.${certFileName}.crt" "./${certFileName}.crt"
 
     log "Your certificate and key are available at:"
-    log "$(get_abs_filename ${certFileName}.crt)"
-    log "$(get_abs_filename ${certFileName}.key)"
+    log "$(get_abs_filename "${certFileName}".crt)"
+    log "$(get_abs_filename "${certFileName}".key)"
 }
 
 # Entrypoint
